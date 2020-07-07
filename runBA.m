@@ -10,6 +10,9 @@
 % 源代码参考
 % https://ww2.mathworks.cn/matlabcentral/fileexchange/74768-the-standard-bat-algorithm-ba
 
+runtime=10;
+
+for r = 1:runtime
 clear
 clc
 
@@ -20,21 +23,21 @@ radar1 = [100 200 300 400 150 250 350 150 250 350 0 466 250 250 466 30];
 radar2 = [0 0 0 0 50 50 50 -50 -50 -50 40 40 -300 300 -40 -20];
 R = [40 40 40 40 40 40 40 40 40 40 20 20 260 277 20 30];
 
-runtime=1;
+
 maxCycle = 500;
 
 D = 30;
 N = 60;
 
-Fmin = 2;
-Fmax = 5;  % 频率上下限
+Fmin = 1;
+Fmax = 4;  % 频率上下限
 f = zeros(N,1);  % 每个蝙蝠的频率
 v = zeros(N,D);  % 速度，设每一维的都不一样
 
-A = 10;  % 噪声
-r0 = 5; % 脉冲
-alpha = 1;
-gamma = 5;  % 两个参数
+A = 5;  % 噪声
+r0 = 10; % 脉冲
+alpha = 0.97;
+gamma = 1.5;  % 两个参数
 
 
 ub=ones(1,D).*50;
@@ -52,7 +55,7 @@ BestInd = BestInd(end);
 GlobalBest = NP(BestInd,:);
 GlobalObj = ObjVal(BestInd);
 
-for r = 1:runtime
+
     for iter = 1:maxCycle
         r = r0*(1-exp(-gamma*iter));
         A = alpha*A;  % 初始化脉冲率和噪声
@@ -86,14 +89,15 @@ for r = 1:runtime
         aaaaa(iter) = GlobalObj; 
         fprintf('iteration = %d ObjVal=%g\n',iter,GlobalObj);
     end
+    storeer(r,:) = aaaaa;
 end
 
-% storeer(r,:) = aaaaa;
 
-% 
-% figure (1)
-% a = mean(storeer);
-% plot(a)
+
+ 
+figure (1)
+a = mean(storeer);
+plot([1:maxCycle],a);
 
 figure (2)
 hold on
@@ -125,6 +129,7 @@ plot([500/(D+1)*D,500],[GlobalBest(D),0],'LineWidth',2);
 
 % 蝙蝠算法
 % 挺快的，参数好多，好复杂，效果一般，调调参数
+% 结果不稳定，总是陷入局部最优
 
 
 
